@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="./hidpi-canvas.js"></script>
+  <script src="./ball.js"></script>
+</head>
+<body>
+  <canvas width="200" height="200"></canvas>
+  <script>
+    const canvas = document.querySelector('canvas')
+    const ctx = canvas.getContext('2d')
+
+    const ball = new Ball(10)
+    ball.x = 20
+    ball.y = 0
+
+    function draw() {
+      v = (200 - ball.y) * 0.05
+      ball.y += v
+      ball.draw(ctx)
+      if(v < 1 ) {
+        ball.y = 0
+      }
+    }
+
+    (function drawFrame(){
+      requestAnimationFrame(drawFrame)
+      ctx.clearRect(0,0,canvas.width,canvas.height)
+      draw()
+    })()
+
+  </script>
+</body>
+</html>
