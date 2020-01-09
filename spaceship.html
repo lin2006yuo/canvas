@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>easing运动</title>
+    <script src="./hidpi-canvas.js"></script>
+    <script src="./spaceship.js"></script>
+  </head>
+  <body>
+    <canvas width="800" height="500"></canvas>
+    <script>
+      const canvas = document.querySelector("canvas")
+      const ctx = canvas.getContext("2d")
+      const height = canvas.height
+      const width = canvas.width
+
+      const ship = new Spaceship()
+
+      let vr = 0,
+        vx = 0,
+        vy = 0,
+        ax = 0,
+        ay = 0,
+        angle = 0,
+        thrust = 0
+
+      function draw() {
+        ship.rotation += (vr * Math.PI) / 180
+        angle = ship.rotation
+        ax = Math.cos(angle) * thrust
+        ay = Math.sin(angle) * thrust
+        vx += ax
+        vy += ay
+        console.log(ship.x, ship.y)
+        ship.x += vx
+        ship.y += vy
+        ship.draw(ctx)
+      }
+
+      (function drawFrame() {
+        requestAnimationFrame(drawFrame)
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        draw()
+      })()
+
+      window.addEventListener("keydown", event => {
+        switch (event.keyCode) {
+          case 37: // left
+            vr = -3
+            // thrust = 0.05
+            break
+          case 39: // right
+            vr = 3
+            // thrust = 0.05
+            break
+          case 38: // up
+            ship.showFlame = true
+            thrust = 0.05
+            break
+          case 40:
+            ax = 0
+            ay = 0
+            vx = 0
+            vy = 0
+            break
+        }
+      })
+
+      window.addEventListener("keyup", () => {
+        vr = 0
+        thrust = 0
+        ship.showFlame = false
+      })
+    </script>
+  </body>
+</html>

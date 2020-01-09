@@ -4,26 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+  <title>加速运动</title>
   <script src="./hidpi-canvas.js"></script>
   <script src="./ball.js"></script>
 </head>
 <body>
-  <canvas width="200" height="200"></canvas>
+  <canvas width="400" height="400"></canvas>
   <script>
     const canvas = document.querySelector('canvas')
     const ctx = canvas.getContext('2d')
+    const height = canvas.height
 
+    const a = 0.5
+    let v = 0
     const ball = new Ball(10)
-    ball.x = 20
+    ball.x = 200
     ball.y = 0
 
     function draw() {
-      v = (200 - ball.y) * 0.05
+      v += a
       ball.y += v
       ball.draw(ctx)
-      if(v < 1 ) {
+      if(ball.y + ball.radius === height) {
         ball.y = 0
+        v = 0 // 去掉注释会非常有意思
       }
     }
 
