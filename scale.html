@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>线性运动</title>
+    <script src="./hidpi-canvas.js"></script>
+    <script src="./ball.js"></script>
+  </head>
+  <body>
+    <canvas width="400" height="400"></canvas>
+    <script>
+      const canvas = document.querySelector("canvas")
+      const ctx = canvas.getContext("2d")
+      const height = canvas.height
+
+      const ball = new Ball(10)
+      ball.y = 200
+      ball.x = 200
+
+      let angle = 0
+
+      function draw() {
+
+        ball.scaleX  = ball.scaleY = 1 + Math.sin(angle) * 1/2
+
+        angle += 1/ 40
+        ball.draw(ctx)
+      }
+
+      ;(function drawFrame() {
+        requestAnimationFrame(drawFrame)
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+        draw()
+      })()
+    </script>
+  </body>
+</html>
