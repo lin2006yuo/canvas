@@ -4,36 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>线性运动</title>
+    <title>事件</title>
     <script src="./hidpi-canvas.js"></script>
     <script src="./ball.js"></script>
+    <script src="./Mouse.js"></script>
+    <script src="./arrow.js"></script>
   </head>
   <body>
     <canvas width="400" height="400"></canvas>
     <script>
       const canvas = document.querySelector("canvas")
       const ctx = canvas.getContext("2d")
-      const height = canvas.height
+      const arrow = new Arrow()
+      const mouse = utils.mouse(canvas)
 
-      const ball = new Ball(10)
-      ball.y = 200
-      ball.x = 200
-
-      let angle = 0
-
-      function draw() {
-
-        ball.scaleX  = ball.scaleY = 1 + Math.sin(angle) * 1/2
-
-        angle += 1/ 40
-        ball.draw(ctx)
-      }
-
-      (function drawFrame() {
-        requestAnimationFrame(drawFrame)
+      ;(function drawFrame() {
+        window.requestAnimationFrame(drawFrame)
         ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-        draw()
+        let dx = mouse.x - arrow.x,
+          dy = mouse.y - arrow.y
+        const angle = Math.atan2(dy, dx - 20)
+        arrow.rotate = angle
+        arrow.draw(ctx)
       })()
     </script>
   </body>

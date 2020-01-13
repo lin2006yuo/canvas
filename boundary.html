@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>边界检测</title>
+    <script src="./hidpi-canvas.js"></script>
+    <script src="./ball.js"></script>
+  </head>
+  <body>
+    <canvas width="400" height="400"></canvas>
+    <script>
+      const canvas = document.querySelector("canvas")
+      const ctx = canvas.getContext("2d")
+      const width = canvas.width
+      const height = canvas.height
+      let left = 0,
+        top1 = 0,
+        right = canvas.width,
+        bottom = canvas.height
+      const ballNum = 1
+      const ballList = []
+      const bounce = -0.6
+      let speed = 0
+      let f = 0.05
+
+      for (let i = 0; i < ballNum; i++) {
+        const radius = Math.random() * 20 + 5,
+          color = "#" + ((Math.random() * 0xffffff) << 0).toString(16),
+          ball = new Ball(radius, color)
+        ball.id = "ball_" + i
+        ball.x = Math.random() * width
+        ball.y = Math.random() * height
+        ball.vx = Math.random() * 2 - 1
+        ball.vy = Math.random() * 2 - 1
+        ballList.push(ball)
+      }
+
+      function draw(ball, pos) {
+        ball.vx *= 1.002
+        ball.vy *= 1.002
+
+        speed = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy)
+        angel = Math.atan2(ball.vy, ball.vx)
+        ball.x +=  ball.vx
+        ball.y += ball.vy
+        // if (speed > 0.05) {
+        //   speed -= f
+        // } else {
+        //   speed = 0
+        // }
+        if (
+          ball.x + ball.radius > right ||
+          ball.x - ball.radius < left ||
+          ball.y - ball.radius < top1 ||
+          ball.y + ball.radius > bottom
+        ) {
+          // console.log(ballList)
+          // ballList.splice(pos, 1)
+          // ball.x = width - ball.x
+          // ball.y = ball.y - ball.radius > bottom ? 0 : height
+          // ball.vx = Math.random() * 2 - 1
+          // ball.vy = Math.random() * -2 - 1
+          // if (ballList.length > 0) {
+          //   console.log("移除" + ball.id)
+          // } else {
+          //   console.log("全部移除")
+          // }
+          ball.vx *= -1
+          ball.vy *= -1
+        }
+        ball.draw(ctx)
+      }
+
+      ;(function drawFrame() {
+        requestAnimationFrame(drawFrame)
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+        let { length } = ballList
+        while (length--) {
+          draw(ballList[length], length)
+        }
+      })()
+    </script>
+  </body>
+</html>
