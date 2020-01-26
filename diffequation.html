@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>差分方程</title>
+    <!-- <script src="./hidpi-canvas.js"></script> -->
+    <script src="./ball.js"></script>
+  </head>
+  <body style="height: 300px">
+    <div id="container">
+      <canvas id="canvas">
+        啊哦，你的浏览器不支持canvas. Sorry~
+      </canvas>
+      <span id="blue" onclick="blue()"></span>
+      <span id="purple" onclick="purple()"></span>
+      <span id="black" onclick="black()"></span>
+    </div>
+    <script>
+      var canvas, ctx
+      var vertexes = []
+      var diffPt = []
+      var autoDiff = 100
+      var verNum = 30
+      var canvasW = window.innerWidth + 40
+      var addListener = function(e, str, func) {
+        if (e.addEventListener) {
+          e.addEventListener(str, func, false)
+        } else if (e.attachEvent) {
+          e.attachEvent('on' + str, func)
+        } else {
+        }
+      }
+
+      addListener(window, 'load', init)
+
+      function resize() {
+        canvasW = document.getElementById('container').offsetWidth + 40
+        initCanvas(canvasW, window.innerHeight)
+        var cW = canvas.width
+        var cH = canvas.height
+        for (var i = 0; i < verNum; i++)
+          vertexes[i] = new Vertex((cW / (verNum - 1)) * i, cH / 2, cH / 2)
+        initDiffPt()
+        var win_3 = window.innerWidth / 3
+      }
+      function init() {
+        resize()
+        var FPS = 30
+        var interval = (1000 / FPS) >> 0
+        // var timer = setInterval(update, interval)
+        update()
+        if (window.addEventListener)
+          addListener(window, 'DOMMouseScroll', wheelHandler)
+        addListener(window, 'mousewheel', wheelHandler)
+        addListener(window, 'resize', resize)
+
+        canvas.onmousedown = function(e) {
+          //div.innerHTML=e.clientX+":"+e.clientY;
+          //var mx = document.getElementById("mx");
+
+          //alert(1);
+          var mouseX, mouseY
+          if (e) {
+            mouseX = e.pageX
+            mouseY = e.pageY
+          } else {
+            mouseX = event.x + document.body.scrollLeft
+            mouseY = event.y + document.body.scrollTop
+          }
+
+          // if (
+          //   window.innerHeight / 2 - mouseY < 50 &&
+          //   window.innerHeight / 2 - mouseY > -50
+          // ) {
+          //diffPt[150] = autoDiff;
+          autoDiff = 1000
+          if (mouseX < canvas.width - 2) {
+            console.log('init')
+            xx = 1 + Math.floor(((verNum - 2) * mouseX) / canvas.width)
+
+            diffPt[xx] = autoDiff
+          }
+          // }
+        }
+      }
+
+      var wheelHandler = function(e) {
+        var s = e.detail ? -e.detail : e.wheelDelta
+        s > 0 ? (dd > 15 ? dd-- : (dd = dd)) : dd < 50 ? dd++ : (dd = dd)
+      }
+
+      function initDiffPt() {
+        console.log('init diff pt')
+        for (var i = 0; i < verNum; i++) diffPt[i] = 1000
+      }
+      var xx = 20
+      var dd = 10
+
+      function update() {
+        //ctx.rect(50,20,280,620);
+        //ctx.stroke();
+        //ctx.clip();
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        autoDiff -= autoDiff * 0.9
+        diffPt[xx] = autoDiff
+        //左侧
+        //差分，使得每个点都是上一个点的下一次的解，由于差分函数出来的解是一个曲线，且每次迭代后，曲线相加的结果形成了不断地波浪
+        for (var i = xx - 1; i > 0; i--) {
+          var d = xx - i
+          if (d > dd) d = dd
+          diffPt[i] -= (diffPt[i] - diffPt[i + 1]) * (1 - 0.01 * d)
+        }
+        //右侧
+        for (var i = xx + 1; i < verNum; i++) {
+          var d = i - xx
+          if (d > dd) d = dd
+          diffPt[i] -= (diffPt[i] - diffPt[i - 1]) * (1 - 0.01 * d)
+        }
+
+        //更新点Y坐标
+        for (var i = 0; i < vertexes.length; i++) {
+          vertexes[i].updateY(diffPt[i])
+          // console.log(vertexes[i].x)
+        }
+
+        draw()
+      }
+      var color1 = '#6ca0f6'
+      var color2 = '#367aec'
+      function draw() {
+        ctx.beginPath()
+        ctx.moveTo(0, window.innerHeight)
+        ctx.fillStyle = color1
+        // ctx.lineTo(vertexes[0].x, vertexes[0].y)
+
+        ctx.lineTo(17.724137931034484, 346.47484216427546)
+        ctx.lineTo(35.44827586206897, 342.8609357380838)
+        ctx.lineTo(53.17241379310345, 338.84548415342647)
+        ctx.lineTo(70.89655172413794, 334.383871281585)
+        ctx.lineTo(88.62068965517241, 329.42652364620557)
+        ctx.lineTo(106.3448275862069, 323.918359606895)
+        ctx.lineTo(124.0689655172414, 317.7981773409945)
+        ctx.lineTo(141.79310344827587, 310.99797482332724)
+        ctx.lineTo(159.51724137931035, 303.4421942481414)
+        ctx.lineTo(177.24137931034483, 295.04688249793486)
+        ctx.lineTo(194.96551724137933, 285.7187583310387)
+        ctx.lineTo(212.6896551724138, 276.4931410231195)
+        ctx.lineTo(230.41379310344828, 267.5795011120864)
+        ctx.lineTo(248.1379310344828, 259.19301194848)
+        ctx.lineTo(265.86206896551727, 251.54575739199998)
+        ctx.lineTo(283.58620689655174, 244.83763936)
+        ctx.lineTo(301.3103448275862, 239.24754099999998)
+        ctx.lineTo(319.0344827586207, 234.9253)
+        ctx.lineTo(336.7586206896552, 231.98499999999999)
+        ctx.lineTo(354.48275862068965, 230.5)
+        ctx.lineTo(372.2068965517242, 231.98499999999999)
+        ctx.lineTo(389.93103448275866, 234.9253)
+        ctx.lineTo(407.65517241379314, 239.24754099999998)
+        ctx.lineTo(425.3793103448276, 244.83763936)
+        ctx.lineTo(443.1034482758621, 251.54575739199998)
+        ctx.lineTo(460.82758620689657, 259.19301194848)
+        ctx.lineTo(478.55172413793105, 267.5795011120864)
+        ctx.lineTo(496.2758620689656, 276.4931410231195)
+        ctx.lineTo(514, 285.7187583310387)
+
+        // ctx.lineTo(5, 230)
+        // ctx.lineTo(10, 235)
+        // ctx.lineTo(15, 260)
+        // ctx.lineTo(20, 245)
+        // ctx.lineTo(25, 250)
+        // ctx.lineTo(30, 255)
+        // ctx.lineTo(35, 260)
+        // ctx.lineTo(40, 265)
+        // ctx.lineTo(45, 270)
+
+        // for (var i = 1; i < vertexes.length; i++) {
+        //   console.log(vertexes[i].x, vertexes[i].y)
+        //   ctx.lineTo(vertexes[i].x, vertexes[i].y)
+        // }
+        ctx.lineTo(canvas.width, window.innerHeight)
+        ctx.lineTo(0, window.innerHeight)
+        ctx.fill()
+
+        // ctx.beginPath()
+        // ctx.moveTo(0, window.innerHeight)
+        // ctx.fillStyle = color2
+        // ctx.lineTo(vertexes[0].x + 15, vertexes[0].y + 5)
+        // for (var i = 1; i < vertexes.length; i++) {
+        //   ctx.lineTo(vertexes[i].x + 15, vertexes[i].y + 5)
+        // }
+        // ctx.lineTo(canvas.width, window.innerHeight)
+        // ctx.lineTo(0, window.innerHeight)
+        // ctx.fill()
+      }
+      function initCanvas(width, height) {
+        canvas = document.getElementById('canvas')
+        canvas.width = width
+        canvas.height = height
+        ctx = canvas.getContext('2d')
+      }
+
+      function Vertex(x, y, baseY) {
+        this.baseY = baseY
+        this.x = x
+        this.y = y
+        this.vy = 0
+        this.targetY = 0
+        this.friction = 0.15
+        this.deceleration = 0.95
+      }
+
+      Vertex.prototype.updateY = function(diffVal) {
+        this.targetY = diffVal + this.baseY
+        this.vy += this.targetY - this.y
+        this.y += this.vy * this.friction
+        this.vy *= this.deceleration
+      }
+    </script>
+  </body>
+</html>
