@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>圆周运动</title>
+    <script src="./hidpi-canvas.js"></script>
+    <script src="./ball.js"></script>
+  </head>
+  <body>
+    <canvas width="400" height="400"></canvas>
+    <script>
+      const canvas = document.querySelector('canvas')
+      const ctx = canvas.getContext('2d')
+      const height = canvas.height
+
+      let x = 100
+      let y = 100
+
+      function draw() {
+        ctx.save()
+        ctx.strokeStyle = '#000'
+        ctx.translate(x, y)
+        ctx.lineWidth = 1
+        ctx.textAlign = 'center'
+        ctx.beginPath()
+        for (var i = 0; i <= 1000; i += 10) {
+          ctx.moveTo(i, 0)
+
+          if (i % 30 === 0) {
+            ctx.lineTo(i, -30)
+            ctx.fillText(i, i, -35)
+          }
+          // if (n % 10 === 0) {
+          //   ctx.lineTo(i, 1)
+          //   if (i === 0) {
+          //     ctx.fillText(1, i, 1 + 1)
+          //   } else {
+          //     // ctx.fillText((n / 10) * this.step, i, 1 + 1)
+          //   }
+          // } else {
+          ctx.lineTo(i, -10)
+          // }
+          // n++
+        }
+        ctx.closePath()
+        ctx.stroke()
+        // ctx.restore()
+
+        // ctx.strokeStyle = '#000'
+        ctx.beginPath()
+        ctx.moveTo(0, 0)
+        ctx.lineTo(1000, 0)
+        ctx.stroke()
+        ctx.closePath()
+        ctx.restore() // restore回到没有translate的状态
+
+        ctx.strokeStyle = '#f00'
+        ctx.beginPath()
+        ctx.moveTo(120 + y, 120)
+        ctx.lineTo(120 + y, 20)
+        ctx.stroke()
+        ctx.restore()
+      }
+
+      ;(function drawFrame() {
+        // x += -2
+        requestAnimationFrame(drawFrame)
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+        draw()
+      })()
+    </script>
+  </body>
+</html>
